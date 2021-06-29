@@ -65,21 +65,25 @@ const signout=(req, res)=>{
 const isAuth=(req, res, next)=>{
 
     let user=req.profile && req.auth && req.profile._id==req.auth._id
+    console.log(req.auth)
     if (!user) {
         return res.status(403).json({error:'Access denied'})
+   
 
 
     }
     next()
 }
 
-const isAdmin =(req, res, next)=>{
 
-    if (req.profile.isAdmin===0){
-        return res.status(403).json({error:'Admin resource ! Access denied'})
+const isAdmin=(req, res, next)=>{
+
+    if (req.profile.role===0) {
+        return res.status(403).json({error:'Admin resource! Access denied'})
     }
-    next()
+    next();
 }
+
 
 module.exports={
     signup, 

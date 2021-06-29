@@ -4,7 +4,7 @@ const {isAuth, isAdmin}=require('../controllers/authController')
 
 const {userById}=require('../controllers/userController')
 
-router.get('/secret/:userId', isAuth, (req, res)=>{
+router.get('/secret/:userId', isAuth,isAdmin,(req, res)=>{
 
     res.json({user:req.profile})
 })
