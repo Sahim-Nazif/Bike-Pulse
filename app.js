@@ -2,7 +2,7 @@ const express=require('express')
 const app=express()
 const mongoose=require('mongoose')
 const morgan=require('morgan')
-const userRoutes=require('./routes/user')
+const authRoutes=require('./routes/auth')
 const cookieParser=require('cookie-parser')
 const expressValidator=require('express-validator')
 
@@ -36,7 +36,7 @@ app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 app.use(expressValidator())
 //routes
-app.use('/api',userRoutes)
+app.use('/api',authRoutes)
 const port=process.env.PORT
 app.listen(port, ()=>{
     console.log(`Server Running On Port: ${port}`)
