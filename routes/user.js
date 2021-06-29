@@ -1,10 +1,10 @@
 const express=require('express')
 const router=express.Router()
-
+const {isAuth, isAdmin}=require('../controllers/authController')
 
 const {userById}=require('../controllers/userController')
 
-router.get('/secret/:userId', (req, res)=>{
+router.get('/secret/:userId', isAuth, (req, res)=>{
 
     res.json({user:req.profile})
 })
