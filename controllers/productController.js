@@ -99,6 +99,8 @@ const update_product=(req, res)=>{
 
 }
 
+
+
 module.exports={
 
     create_product,

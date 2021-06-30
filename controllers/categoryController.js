@@ -59,10 +59,26 @@ const delete_category=(req, res)=>{
     const category=req.category
     category.remove((err, removed)=>{
 
-            return res.status(400).json({error:'Could not perform the operation'})
+            if (err ) {
+                return res.status(400).json({error:'Could not perform the operation'})
+            }
+            return res.status(200).json({message:'Category deleted successfully!'})
+            
      })    
-     return res.status(200).json({message:'Category deleted successfully!'})
+   
     
+}
+
+const update_category=(req, res)=>{
+
+     const category=req.category
+     category.name=req.body.name
+     category.save((err, category)=>{
+         if (err) {
+             return res.status(400).json({error:'Could not update the category!'})
+         }
+         return res.json(category)
+     })
 }
 module.exports={
 
@@ -70,5 +86,6 @@ module.exports={
     category_ById,
     read,
     get_all_categories,
-    delete_category
+    delete_category,
+    update_category
 }
