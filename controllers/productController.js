@@ -213,6 +213,7 @@ module.exports={
     list,
     related_products,
     list_categories,
-    listBySearch
+    listBySearch,
+    photo
 
 }

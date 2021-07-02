@@ -8,7 +8,7 @@ const categoryRoutes=require('./routes/category')
 const productRoutes=require('./routes/product')
 const cookieParser=require('cookie-parser')
 const expressValidator=require('express-validator')
-
+const cors = require('cors')
 require ('dotenv').config()
 
 //db connection
@@ -38,6 +38,7 @@ app.use(express.json())
 app.use(express.urlencoded({extended:true}))
 app.use(cookieParser())
 app.use(expressValidator())
+app.use(cors())
 //routes
 app.use('/api',authRoutes)
 app.use('/api',userRoutes)
