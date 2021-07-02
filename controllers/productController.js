@@ -99,6 +99,29 @@ const update_product=(req, res)=>{
 
 }
 
+/**
+ * Sell/Arrival
+ */
+const list=async(req, res)=>{
+
+    let order=req.query.order? req.query.order:'asc'
+    let sortBy=req.query.sortBy ? req.query.sortBy: '_id'
+    let limit=req.query.limit ? req.query.limit:6
+
+    await Product.find()
+            .select('-photo')
+            .populate('category')
+            .sort([[sortBy, order]])
+            .limit(limit)
+            .exec((err, products)=>{
+                
+                if (err){
+                    return res.status(400).json({error:'Products not found'})
+                }
+                return res.send(products)
+            })
+}
+
 
 
 module.exports={
@@ -107,6 +130,7 @@ module.exports={
     productById,
     read,
     delete_product,
-    update_product
+    update_product,
+    list
 
 }
