@@ -106,7 +106,7 @@ const list=async(req, res)=>{
 
     let order=req.query.order? req.query.order:'asc'
     let sortBy=req.query.sortBy ? req.query.sortBy: '_id'
-    let limit=req.query.limit ? req.query.limit:6
+    let limit=req.query.limit ? parseInt(req.query.limit):6
 
     await Product.find()
             .select('-photo')
@@ -118,10 +118,38 @@ const list=async(req, res)=>{
                 if (err){
                     return res.status(400).json({error:'Products not found'})
                 }
-                return res.send(products)
+                return res.json(products)
             })
 }
 
+const related_products=(re, res)=>{
+
+    let limit=req.query.limit ? parseInt(req.query.limit):6
+
+    Product.find({_id:{$ne:req.product}, category:req.product.category})
+            .limit(limit)
+            .populate('category','_id name')
+            .exec((err, products)=>{
+                if (err){
+                    return res.status(400).json({error:'Products not found'})
+                }
+                res.json(products)
+            })
+}
+
+
+
+
+const list_categories=(req, res)=>{
+
+    Product.distinct('category', {}, (err, categories)=>{
+
+         if (err){
+             return res.status(400).json({error:'categories not found'})
+         }
+         res.json(categories)
+    })
+}
 
 
 module.exports={
@@ -131,6 +159,8 @@ module.exports={
     read,
     delete_product,
     update_product,
-    list
+    list,
+    related_products,
+    list_categories
 
 }

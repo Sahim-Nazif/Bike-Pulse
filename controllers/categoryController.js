@@ -80,6 +80,8 @@ const update_category=(req, res)=>{
          return res.json(category)
      })
 }
+
+
 module.exports={
 
     create_category,
@@ -87,5 +89,6 @@ module.exports={
     read,
     get_all_categories,
     delete_category,
-    update_category
+    update_category,
+
 }
