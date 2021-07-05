@@ -46,8 +46,8 @@ const signin=async(req, res)=>{
 
          //return response with user and token to frontend client
 
-         const {_id, firstName, lastName, email, role}=user
-         return res.json({token, user:{_id, firstName,lastName, email, role}})
+         const {_id, firstName, lastName, email,about, role}=user
+         return res.json({token, user:{_id, firstName,lastName, email, about, role}})
 
 
     })

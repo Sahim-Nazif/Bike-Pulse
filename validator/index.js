@@ -5,7 +5,7 @@ exports.userSignupValidator=(req,res,next)=>{
 
     req.check('firstName', 'First Name is required').notEmpty()
     req.check('lastName', 'Last Name is required').notEmpty()
-    req.check('email', 'Email is required and the length should minimum 5 characters')
+    req.check('email', 'Email is required and the length should minimum 5 characters').notEmpty()
     .matches(/.+\@.+\..+/)
     .withMessage('Email must contain @')
     .isLength({ 
@@ -14,7 +14,7 @@ exports.userSignupValidator=(req,res,next)=>{
     })
 
     req.check('password', 'Please provide a password').notEmpty()
-    req.check('password')
+    req.check('password').notEmpty()
         .isLength({min:6})
         .withMessage('Password must be at least 6 characters')
         .matches(/\d/)
