@@ -39,7 +39,9 @@ const create_product=(req, res)=>{
 
 const productById=(req, res, next, id)=>{
 
-    Product.findById(id).exec((err, product)=>{
+    Product.findById(id)
+    .populate('category')
+    .exec((err, product)=>{
         if (err || !product){
             return res.status(400).json({error:'Could not find the product'})
         }
@@ -207,7 +209,7 @@ const photo=(req, res, next)=>{
 const listSearch=(req, res)=>{
 
     const query ={}
-    if (req. query.search) {
+    if (req.query.search) {
         query.name={$regex:req.query.search, $options:'i'}
         if (req. query.category && req.query.category !='All'){
             query.category=req.query.category
