@@ -122,7 +122,7 @@ const list=async(req, res)=>{
             })
 }
 
-const related_products=(re, res)=>{
+const related_products=(req, res)=>{
 
     let limit=req.query.limit ? parseInt(req.query.limit):6
 
@@ -140,9 +140,9 @@ const related_products=(re, res)=>{
 
 
 
-const list_categories=(req, res)=>{
+const list_categories= async(req, res)=>{
 
-    Product.distinct('category', {}, (err, categories)=>{
+    await Product.distinct('category', {}, (err, categories)=>{
 
          if (err){
              return res.status(400).json({error:'categories not found'})
@@ -203,6 +203,24 @@ const photo=(req, res, next)=>{
     }
     next()
 }
+
+const listSearch=(req, res)=>{
+
+    const query ={}
+    if (req. query.search) {
+        query.name={$regex:req.query.search, $options:'i'}
+        if (req. query.category && req.query.category !='All'){
+            query.category=req.query.category
+        }
+        Product.find(query, (err, bikes)=>{
+            if (err) {
+                return res.status(400).json({error:'No bike found'})
+            }
+            res.json(bikes)
+        }).select('-photo')
+    }
+
+}
 module.exports={
 
     create_product,
@@ -214,6 +232,7 @@ module.exports={
     related_products,
     list_categories,
     listBySearch,
-    photo
+    photo,
+    listSearch
 
 }
