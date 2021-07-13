@@ -1,102 +1,102 @@
-const Product= require('../models/product')
-const formidable=require('formidable')
-const lodash=require('lodash')
-const fs=require('fs')
+const Product = require('../models/product')
+const formidable = require('formidable')
+const lodash = require('lodash')
+const fs = require('fs')
 
 
 
-const create_product=(req, res)=>{
+const create_product = (req, res) => {
 
 
-        const form= new formidable.IncomingForm()
-        form.keepExtensions=true
-        form.parse(req, (err,fields, files)=>{
+    const form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, (err, fields, files) => {
 
-             if (err){
-                 return res.status(400).json({error:'Image could not uploaded'})
-             }
-  
-             const product= new Product(fields)
+        if (err) {
+            return res.status(400).json({ error: 'Image could not uploaded' })
+        }
 
-             if (files.photo) {
-                  //1kb=1000
-                //1mb= 1000000
-                 if (files.photo.size >1000000) {
-                     return res.status(400).json({error:'Image size should be less than 1mb in size !'})
-                 }
-                 product.photo.data=fs.readFileSync(files.photo.path)
-                 product.photo.contentType=files.photo.type
-             }
-             product.save((err, result)=>{
-                 if (err){
-                     return res.status(400).json({error:'Product was not created !'})
-                 }
-                 res.json(result)
-             })
+        const product = new Product(fields)
+
+        if (files.photo) {
+            //1kb=1000
+            //1mb= 1000000
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({ error: 'Image size should be less than 1mb in size !' })
+            }
+            product.photo.data = fs.readFileSync(files.photo.path)
+            product.photo.contentType = files.photo.type
+        }
+        product.save((err, result) => {
+            if (err) {
+                return res.status(400).json({ error: 'Product was not created !' })
+            }
+            res.json(result)
         })
+    })
 
 }
 
-const productById=(req, res, next, id)=>{
+const productById = (req, res, next, id) => {
 
     Product.findById(id)
-    .populate('category')
-    .exec((err, product)=>{
-        if (err || !product){
-            return res.status(400).json({error:'Could not find the product'})
-        }
-        req.product=product
-        next()
-    })
+        .populate('category')
+        .exec((err, product) => {
+            if (err || !product) {
+                return res.status(400).json({ error: 'Could not find the product' })
+            }
+            req.product = product
+            next()
+        })
 }
 
-const read=(req, res)=>{
+const read = (req, res) => {
 
-    req.product.photo=undefined
+    req.product.photo = undefined
     return res.json(req.product)
 }
 
-const delete_product=(req, res)=>{
+const delete_product = (req, res) => {
 
-    const product=req.product
-    product.remove((err, deleted)=>{
-        if (err){
-            return res.status(400).status({error:'Could not find the product'})
+    const product = req.product
+    product.remove((err, deleted) => {
+        if (err) {
+            return res.status(400).status({ error: 'Could not find the product' })
         }
-        res.json({message:'Producted deleted successfully!'})
+        res.json({ message: 'Producted deleted successfully!' })
     })
 }
 
-const update_product=(req, res)=>{
+const update_product = (req, res) => {
 
 
-    const form= new formidable.IncomingForm()
-    form.keepExtensions=true
-    form.parse(req, (err,fields, files)=>{
+    const form = new formidable.IncomingForm()
+    form.keepExtensions = true
+    form.parse(req, (err, fields, files) => {
 
-         if (err){
-             return res.status(400).json({error:'Image could not uploaded'})
-         }
+        if (err) {
+            return res.status(400).json({ error: 'Image could not uploaded' })
+        }
 
-        let product= req.product
+        let product = req.product
 
-         product=lodash.extend(product, fields)
+        product = lodash.extend(product, fields)
 
-         if (files.photo) {
-              //1kb=1000
+        if (files.photo) {
+            //1kb=1000
             //1mb= 1000000
-             if (files.photo.size >1000000) {
-                 return res.status(400).json({error:'Image size should be less than 1mb in size !'})
-             }
-             product.photo.data=fs.readFileSync(files.photo.path)
-             product.photo.contentType=files.photo.type
-         }
-         product.save((err, result)=>{
-             if (err){
-                 return res.status(400).json({error:'Product was not created !'})
-             }
-             res.json(result)
-         })
+            if (files.photo.size > 1000000) {
+                return res.status(400).json({ error: 'Image size should be less than 1mb in size !' })
+            }
+            product.photo.data = fs.readFileSync(files.photo.path)
+            product.photo.contentType = files.photo.type
+        }
+        product.save((err, result) => {
+            if (err) {
+                return res.status(400).json({ error: 'Product was not created !' })
+            }
+            res.json(result)
+        })
     })
 
 }
@@ -104,57 +104,57 @@ const update_product=(req, res)=>{
 /**
  * Sell/Arrival
  */
-const list=async(req, res)=>{
+const list = async (req, res) => {
 
-    let order=req.query.order? req.query.order:'asc'
-    let sortBy=req.query.sortBy ? req.query.sortBy: '_id'
-    let limit=req.query.limit ? parseInt(req.query.limit):6
+    let order = req.query.order ? req.query.order : 'asc'
+    let sortBy = req.query.sortBy ? req.query.sortBy : '_id'
+    let limit = req.query.limit ? parseInt(req.query.limit) : 6
 
     await Product.find()
-            .select('-photo')
-            .populate('category')
-            .sort([[sortBy, order]])
-            .limit(limit)
-            .exec((err, products)=>{
-                
-                if (err){
-                    return res.status(400).json({error:'Products not found'})
-                }
-                return res.json(products)
-            })
+        .select('-photo')
+        .populate('category')
+        .sort([[sortBy, order]])
+        .limit(limit)
+        .exec((err, products) => {
+
+            if (err) {
+                return res.status(400).json({ error: 'Products not found' })
+            }
+            return res.json(products)
+        })
 }
 
-const related_products=(req, res)=>{
+const related_products = (req, res) => {
 
-    let limit=req.query.limit ? parseInt(req.query.limit):6
+    let limit = req.query.limit ? parseInt(req.query.limit) : 2
 
-    Product.find({_id:{$ne:req.product}, category:req.product.category})
-            .limit(limit)
-            .populate('category','_id name')
-            .exec((err, products)=>{
-                if (err){
-                    return res.status(400).json({error:'Products not found'})
-                }
-                res.json(products)
-            })
+    Product.find({ _id: { $ne: req.product }, category: req.product.category })
+        .limit(limit)
+        .populate('category', '_id name')
+        .exec((err, products) => {
+            if (err) {
+                return res.status(400).json({ error: 'Products not found' })
+            }
+            res.json(products)
+        })
 }
 
 
 
 
-const list_categories= async(req, res)=>{
+const list_categories = async (req, res) => {
 
-    await Product.distinct('category', {}, (err, categories)=>{
+    await Product.distinct('category', {}, (err, categories) => {
 
-         if (err){
-             return res.status(400).json({error:'categories not found'})
-         }
-         res.json(categories)
+        if (err) {
+            return res.status(400).json({ error: 'categories not found' })
+        }
+        res.json(categories)
     })
 }
 
 // search func
- const listBySearch = (req, res) => {
+const listBySearch = (req, res) => {
     let order = req.body.order ? req.body.order : 'desc';
     let sortBy = req.body.sortBy ? req.body.sortBy : '_id';
     let limit = req.body.limit ? parseInt(req.body.limit) : 100;
@@ -197,33 +197,33 @@ const list_categories= async(req, res)=>{
         });
 };
 
-const photo=(req, res, next)=>{
+const photo = (req, res, next) => {
 
-    if (req.product.photo.data){
+    if (req.product.photo.data) {
         res.set('Content-Type', req.product.photo.contentType)
         return res.send(req.product.photo.data)
     }
     next()
 }
 
-const listSearch=(req, res)=>{
+const listSearch = (req, res) => {
 
-    const query ={}
+    const query = {}
     if (req.query.search) {
-        query.name={$regex:req.query.search, $options:'i'}
-        if (req. query.category && req.query.category !='All'){
-            query.category=req.query.category
+        query.name = { $regex: req.query.search, $options: 'i' }
+        if (req.query.category && req.query.category != 'All') {
+            query.category = req.query.category
         }
-        Product.find(query, (err, bikes)=>{
+        Product.find(query, (err, bikes) => {
             if (err) {
-                return res.status(400).json({error:'No bike found'})
+                return res.status(400).json({ error: 'No bike found' })
             }
             res.json(bikes)
         }).select('-photo')
     }
 
 }
-module.exports={
+module.exports = {
 
     create_product,
     productById,
