@@ -6,7 +6,7 @@ const {generateToken,processPayment}=require('../controllers/brainTreeController
 
 
 router.get('/braintree/getToken/:userId', generateToken)
-router.get('/braintree/payment/:userId', processPayment)
+router.post('/braintree/payment/:userId', processPayment)
 
 router.param('userId', userById)
 module.exports=router
