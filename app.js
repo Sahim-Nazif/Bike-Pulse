@@ -7,6 +7,7 @@ const userRoutes=require('./routes/user')
 const categoryRoutes=require('./routes/category')
 const productRoutes=require('./routes/product')
 const brainTreeRoutes=require('./routes/braintree')
+const orderRoutes=require('./routes/order')
 const cookieParser=require('cookie-parser')
 const expressValidator=require('express-validator')
 const cors = require('cors')
@@ -46,6 +47,8 @@ app.use('/api',userRoutes)
 app.use('/api',categoryRoutes)
 app.use('/api',productRoutes)
 app.use('/api', brainTreeRoutes)
+app.use('/api', orderRoutes)
+
 const port=process.env.PORT
 app.listen(port, ()=>{
     console.log(`Server Running On Port: ${port}`)
