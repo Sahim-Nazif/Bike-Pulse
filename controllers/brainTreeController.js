@@ -13,9 +13,9 @@ const gateway=new braintree.BraintreeGateway({
 
 const generateToken=(req, res)=>{
 
-    gateway.clientToken.generate({}, (err, response)=>{
-        if (err) {
-            res.status(500).send(err)
+    gateway.clientToken.generate({}, (error, response)=>{
+        if (error) {
+            res.status(500).send(error)
         } else {
             res.send(response)
         }
