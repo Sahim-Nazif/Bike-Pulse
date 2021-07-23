@@ -223,6 +223,28 @@ const listSearch = (req, res) => {
     }
 
 }
+
+const decreaseQuantity=(req, res, next)=>{
+
+    let bulkOps=req.body.order.products.map((ite)=>{
+
+        return {
+            updateOne:{
+                filter:{_id:item._id},
+                update:{$inc:{quanity:-item.count, sold: + item.count}}
+            }
+        }
+    })
+
+    Product.bulkWrite(bulkOps, {}, (error, products)=>{
+
+        if (error) {
+            return res.status(400).josn({error: 'Could not update product'})
+        }
+        next()
+    })
+
+}
 module.exports = {
 
     create_product,
@@ -235,6 +257,7 @@ module.exports = {
     list_categories,
     listBySearch,
     photo,
-    listSearch
+    listSearch,
+    decreaseQuantity
 
 }
