@@ -13,7 +13,19 @@ const createOrder=(req, res)=>{
     })
 }
 
+const listOrders=(req, res)=>{
 
+    Order.find()
+        .populate('user', '_id firstName lastName address')
+        .sort('-created')
+        .exec((err, orders)=>{
+            if (err) {
+                return res.status(400).json('Sorry could not save your order!')
+            }
+            res.json(orders)
+        })
+}
 module.exports={
-    createOrder
+    createOrder,
+    listOrders
 }
