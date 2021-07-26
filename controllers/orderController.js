@@ -18,8 +18,8 @@ const listOrders=(req, res)=>{
     Order.find()
         .populate('user', '_id firstName lastName address')
         .sort('-created')
-        .exec((err, orders)=>{
-            if (err) {
+        .exec((error, orders)=>{
+            if (error) {
                 return res.status(400).json('Sorry could not save your order!')
             }
             res.json(orders)
