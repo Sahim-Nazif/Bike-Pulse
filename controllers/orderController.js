@@ -25,7 +25,15 @@ const listOrders=(req, res)=>{
             res.json(orders)
         })
 }
+
+
+const getStatusValues=(req, res)=>{
+
+    res.json(Order.schema.path('status').enumValues)
+
+}
 module.exports={
     createOrder,
-    listOrders
+    listOrders,
+    getStatusValues
 }
