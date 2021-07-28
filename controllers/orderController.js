@@ -7,7 +7,7 @@ const createOrder=(req, res)=>{
     const order= new Order(req.body.order)
     order.save((error, data)=>{
         if (error) {
-            return res.status(400).json('Sorry could not save your order!')
+            return res.status(400).json({error:'Sorry could not save your order!'})
         }
         res.json(data)
     })
@@ -20,7 +20,7 @@ const listOrders=(req, res)=>{
         .sort('-created')
         .exec((error, orders)=>{
             if (error) {
-                return res.status(400).json('Sorry could not save your order!')
+                return res.status(400).json({error:'Sorry could not save your order!'})
             }
             res.json(orders)
         })
@@ -33,14 +33,15 @@ const getStatusValues=(req, res)=>{
 
 }
 
+
 const orderById=(req, res, next, id)=>{
 
     Order.findById(id)
-        .populate('products.product', 'name price')
+        .populate('product', 'name price')
         .exec((error, order)=>{
-            if (error ||!order) {
+            if (error ||! order) {
 
-                return res.status(400).json('Sorry did not receive the order!')
+                return res.status(400).json({error:'Sorry did not receive the order!'})
             }
             req.order=order
             next()
@@ -49,10 +50,12 @@ const orderById=(req, res, next, id)=>{
 
 const updateOrderStatus=(req, res)=>{
 
-    Order.upate({_id:req.body.orderId}, {$set: {status:req.body.status}},(error, order)=>{
+    Order.updateOne({_id:req.body.orderId},
+                 {$set: {status:req.body.status}},
+                 (error, order)=>{
         if (error) {
 
-            return res.status(400).json('Sorry order status was not updated!')
+            return res.status(400).json({error:'Sorry order status was not updated!'})
         }
         res.json(order)
     })
