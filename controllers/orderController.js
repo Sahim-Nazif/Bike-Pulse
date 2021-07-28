@@ -32,8 +32,35 @@ const getStatusValues=(req, res)=>{
     res.json(Order.schema.path('status').enumValues)
 
 }
+
+const orderById=(req, res, next, id)=>{
+
+    Order.findById(id)
+        .populate('products.product', 'name price')
+        .exec((error, order)=>{
+            if (error ||!order) {
+
+                return res.status(400).json('Sorry did not receive the order!')
+            }
+            req.order=order
+            next()
+        })
+}
+
+const updateOrderStatus=(req, res)=>{
+
+    Order.upate({_id:req.body.orderId}, {$set: {status:req.body.status}},(error, order)=>{
+        if (error) {
+
+            return res.status(400).json('Sorry order status was not updated!')
+        }
+        res.json(order)
+    })
+}
 module.exports={
     createOrder,
     listOrders,
-    getStatusValues
+    getStatusValues,
+    orderById,
+    updateOrderStatus
 }
