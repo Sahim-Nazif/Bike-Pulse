@@ -83,5 +83,6 @@ module.exports ={
     userById,
     read,
     update_user,
-    addOrderToUserHistory
+    addOrderToUserHistory,
+    purchaseHistory
 }
