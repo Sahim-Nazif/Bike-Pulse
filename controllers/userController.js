@@ -66,6 +66,18 @@ const addOrderToUserHistory=(req, res, next)=>{
             next()
     })
 }
+
+const purchaseHistory=(req, res)=>{
+
+    Order.find({user:req.profile._id})
+         .populate('user', '_id firstName lastName')
+         .exec((err, orders)=>{
+             if (err) {
+                return res.status(400).json({error: 'Could not get user purchase history'})
+             }
+             res.json(orders)
+         })
+}
 module.exports ={
 
     userById,
